@@ -56,7 +56,7 @@ function addDepartment() {
         ])
         .then((answer) => {
             client.query(
-                'INSERT INTO departments (name) VALUES ($1)',
+                'INSERT INTO departments (department_name) VALUES ($1)',
                 [answer.departmentName],
                 (err, res) => {
                     if (err) throw err;
@@ -71,7 +71,7 @@ function addRole() {
     client.query(departmentQuery, (err, res) => {
         if (err) throw err;
         const departments = res.rows.map((department) => ({
-            name: department.name,
+            name: department.department_name,
             value: department.id,
         }));
 
