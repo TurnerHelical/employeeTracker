@@ -3,7 +3,7 @@ CREATE DATABASE employee_db;
 
 CREATE TABLE departments (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(30) NOT NULL
+  epmloyee_name VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE roles (
