@@ -6,8 +6,8 @@
     "scripts": {
       "start": "node server.js"
     },
-    "author": "Your Name",
-    "license": "ISC",
+    "author": "Hunter",
+    "license": "MIT",
     "dependencies": {
       "inquirer": "^8.2.5",
       "pg": "^8.8.0"

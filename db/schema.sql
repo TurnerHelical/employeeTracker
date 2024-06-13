@@ -1,4 +1,4 @@
-DROP DATABASE IF EXISTS books_db;
+DROP DATABASE IF EXISTS employee_db;
 CREATE DATABASE employee_db;
 
 CREATE TABLE departments (
