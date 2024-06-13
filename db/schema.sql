@@ -1,3 +1,6 @@
+DROP DATABASE IF EXISTS books_db;
+CREATE DATABASE employee_db;
+
 CREATE TABLE departments (
   id SERIAL PRIMARY KEY,
   name VARCHAR(30) NOT NULL
