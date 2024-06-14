@@ -4,7 +4,7 @@
 
   This project creates an a command-line application to manage a company's employee database, using Node.js, Inquirer, and PostgreSQL.
 
-  Link to the walkthrough video: 
+  Link to the walkthrough video: https://app.screencastify.com/v3/watch/myOl9QCXl9WkmPA1GRih
   ## Table Of Content
   *[Title](#title)
 
