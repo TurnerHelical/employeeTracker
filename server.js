@@ -1,4 +1,3 @@
-
 const inquirer = require('inquirer');
 const { Client } = require('pg');
 
@@ -8,6 +7,7 @@ const client = new Client({
     host: 'localhost',
     database: 'employee_tracker',
     password: 'root',
+    port: 5432,
 });
 
 client.connect();
