@@ -1,20 +1,25 @@
 const inquirer = require('inquirer');
-const { Client } = require('pg');
 
+const express = require('express');
 
-const client = new Client({
-    user: 'root',
-    host: 'localhost',
-    database: 'employee_tracker',
-    password: 'root',
-    port: 5432,
-});
+const { Pool } = require('pg');
 
-client.connect();
+const PORT = process.env.PORT || 3001;
+const app = express();
+
+const pool = new Pool(
+    {
+      user: 'postgres',
+      password: 'root',
+      host: 'localhost',
+      database: 'employee_db'
+    },
+)
+pool.connect();
 
 function viewAllDepartments() {
     // Query the database to retrieve all departments
-    client.query('SELECT * FROM departments', (err, res) => {
+    pool.query('SELECT * FROM departments', (err, res) => {
         if (err) throw err;
         console.table(res.rows);
         promptUser();
@@ -23,7 +28,7 @@ function viewAllDepartments() {
 
 function viewAllRoles() {
     // Query the database to retrieve all roles with department information
-    client.query(
+    pool.query(
         'SELECT roles.id, roles.title, roles.salary, departments.name AS department FROM roles JOIN departments ON roles.department_id = departments.id',
         (err, res) => {
             if (err) throw err;
@@ -35,7 +40,7 @@ function viewAllRoles() {
 
 function viewAllEmployees() {
     // Query the database to retrieve all employees with role and manager information
-    client.query(
+    pool.query(
         'SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary, CONCAT(managers.first_name, " ", managers.last_name) AS manager FROM employees JOIN roles ON employees.role_id = roles.id JOIN departments ON roles.department_id = departments.id LEFT JOIN employees managers ON employees.manager_id = managers.id',
         (err, res) => {
             if (err) throw err;
@@ -55,7 +60,7 @@ function addDepartment() {
             },
         ])
         .then((answer) => {
-            client.query(
+            pool.query(
                 'INSERT INTO departments (department_name) VALUES ($1)',
                 [answer.departmentName],
                 (err, res) => {
@@ -68,7 +73,7 @@ function addDepartment() {
 }
 function addRole() {
     const departmentQuery = 'SELECT * FROM departments';
-    client.query(departmentQuery, (err, res) => {
+    pool.query(departmentQuery, (err, res) => {
         if (err) throw err;
         const departments = res.rows.map((department) => ({
             name: department.department_name,
@@ -97,7 +102,7 @@ function addRole() {
             .then((answers) => {
                 const { title, salary, department } = answers;
                 const query = 'INSERT INTO roles (title, salary, department_id) VALUES ($1, $2, $3)';
-                client.query(query, [title, salary, department], (err, res) => {
+                pool.query(query, [title, salary, department], (err, res) => {
                     if (err) throw err;
                     console.log(`Added ${title} role to the database.`);
                     promptUser();
@@ -110,14 +115,14 @@ function addEmployee() {
     const roleQuery = 'SELECT * FROM roles';
     const employeeQuery = 'SELECT * FROM employees';
 
-    client.query(roleQuery, (err, res) => {
+    pool.query(roleQuery, (err, res) => {
         if (err) throw err;
         const roles = res.rows.map((role) => ({
             name: role.title,
             value: role.id,
         }));
 
-        client.query(employeeQuery, (err, res) => {
+        pool;query(employeeQuery, (err, res) => {
             if (err) throw err;
             const employees = res.rows.map((employee) => ({
                 name: `${employee.first_name} ${employee.last_name}`,
@@ -153,7 +158,7 @@ function addEmployee() {
                 .then((answers) => {
                     const { firstName, lastName, role, manager } = answers;
                     const query = 'INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)';
-                    client.query(query, [firstName, lastName, role, manager], (err, res) => {
+                    pool.query(query, [firstName, lastName, role, manager], (err, res) => {
                         if (err) throw err;
                         console.log(`Added ${firstName} ${lastName} to the database.`);
                         promptUser();
@@ -167,14 +172,14 @@ function updateEmployeeRole() {
     const employeeQuery = 'SELECT * FROM employees';
     const roleQuery = 'SELECT * FROM roles';
 
-    client.query(employeeQuery, (err, res) => {
+    pool.query(employeeQuery, (err, res) => {
         if (err) throw err;
         const employees = res.rows.map((employee) => ({
             name: `${employee.first_name} ${employee.last_name}`,
             value: employee.id,
         }));
 
-        client.query(roleQuery, (err, res) => {
+        pool.query(roleQuery, (err, res) => {
             if (err) throw err;
             const roles = res.rows.map((role) => ({
                 name: role.title,
@@ -199,7 +204,7 @@ function updateEmployeeRole() {
                 .then((answers) => {
                     const { employee, role } = answers;
                     const query = 'UPDATE employees SET role_id = $1 WHERE id = $2';
-                    client.query(query, [role, employee], (err, res) => {
+                    pool.query(query, [role, employee], (err, res) => {
                         if (err) throw err;
                         console.log('Employee role updated successfully.');
                         promptUser();
@@ -253,7 +258,7 @@ function promptUser() {
             updateEmployeeRole();
             break;
           case 'Exit':
-            client.end();
+            pool.end();
             break;
           default:
             break;
@@ -262,5 +267,4 @@ function promptUser() {
   }
 
 promptUser();
-
 

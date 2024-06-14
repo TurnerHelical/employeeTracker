@@ -1,10 +1,25 @@
 INSERT INTO departments (department_name)
-VALUES ('HR'),('Management'),('Finance'),('Customer Service');
+VALUES ('Sales'),
+       ('Engineering'),
+       ('Finance'),
+       ('Marketing');
 
-INSERT INTO roles (title, salary, department_id )
-VALUES  ('HR Manager', 100000.00, 2),
-        ('CEO', 250000.00, 2),
-        ('CFO', 150000.00, 2),
-        ('Employee Rep', 75000.00, 1),
-        ('Accountant', 85000.00, 3),
-        ('Representative', 45000.00, 4);
+-- Role seeds
+INSERT INTO roles (title, salary, department_id)
+VALUES ('Sales Lead', 100000, 1),
+       ('Salesperson', 80000, 1),
+       ('Lead Engineer', 150000, 2),
+       ('Software Engineer', 120000, 2),
+       ('Accountant', 125000, 3),
+       ('Marketing Manager', 110000, 4),
+       ('Marketing Coordinator', 90000, 4);
+
+-- Employee seeds
+INSERT INTO employees (first_name, last_name, role_id, manager_id)
+VALUES ('John', 'Doe', 1, NULL),
+       ('Jane', 'Smith', 2, 1),
+       ('Bob', 'Johnson', 3, NULL),
+       ('Alice', 'Williams', 4, 3),
+       ('Tom', 'Brown', 5, NULL),
+       ('Sara', 'Davis', 6, NULL),
+       ('Mike', 'Wilson', 7, 6);
