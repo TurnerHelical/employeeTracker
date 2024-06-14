@@ -29,7 +29,7 @@ function viewAllDepartments() {
 function viewAllRoles() {
     // Query the database to retrieve all roles with department information
     pool.query(
-        'SELECT roles.id, roles.title, roles.salary, departments.name AS department FROM roles JOIN departments ON roles.department_id = departments.id',
+        'SELECT roles.id, roles.title, roles.salary, departments.department_name AS department FROM roles JOIN departments ON roles.department_id = departments.id',
         (err, res) => {
             if (err) throw err;
             console.table(res.rows);
@@ -41,7 +41,7 @@ function viewAllRoles() {
 function viewAllEmployees() {
     // Query the database to retrieve all employees with role and manager information
     pool.query(
-        'SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary, CONCAT(managers.first_name, " ", managers.last_name) AS manager FROM employees JOIN roles ON employees.role_id = roles.id JOIN departments ON roles.department_id = departments.id LEFT JOIN employees managers ON employees.manager_id = managers.id',
+        'SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.department_name AS department, roles.salary, COALESCE(managers.first_name || \' \' || managers.last_name, \'N/A\') AS manager FROM employees JOIN roles ON employees.role_id = roles.id JOIN departments ON roles.department_id = departments.id LEFT JOIN employees managers ON employees.manager_id = managers.id',
         (err, res) => {
             if (err) throw err;
             console.table(res.rows);
@@ -122,7 +122,7 @@ function addEmployee() {
             value: role.id,
         }));
 
-        pool;query(employeeQuery, (err, res) => {
+        pool.query(employeeQuery, (err, res) => {
             if (err) throw err;
             const employees = res.rows.map((employee) => ({
                 name: `${employee.first_name} ${employee.last_name}`,
